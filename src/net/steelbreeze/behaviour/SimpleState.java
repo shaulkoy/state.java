@@ -2,25 +2,16 @@ package net.steelbreeze.behaviour;
 
 import java.util.HashSet;
 
-public class SimpleState implements IVertex {
+public class SimpleState extends Element {
 	HashSet<IBehaviour> exit;
 	HashSet<IBehaviour> entry;
 	
-	public interface IAction {
-		public void Action();
-	}
-	
-	String name;
-	IRegion owner;
-	
-	public SimpleState(String name, IRegion owner) {
-		this.name = name;
-		this.owner = owner;
+	public SimpleState(String name, Region owner) {
+		super( name, owner );
 	}
 
-	@Override
-	public IElement Owner() {
-		return this.owner;
+	public SimpleState(String name, CompositeState owner) {
+		super( name, owner );
 	}
 
 	public void AddExit(IBehaviour behaviour) {
@@ -36,21 +27,4 @@ public class SimpleState implements IVertex {
 		
 		this.entry.add( behaviour );
 	}
-	
-	@Override
-	public void Exit(IState context) {		
-	}
-
-	@Override
-	public void Enter(IState context) {		
-	}
-
-	@Override
-	public void Complete(IState context, Boolean deepHistory) {		
-	}
-
-	@Override
-	public String toString() {
-		return this.owner != null ? this.owner + "." + this.name : this.name;
-	}	
 }

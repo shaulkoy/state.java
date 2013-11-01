@@ -1,38 +1,23 @@
 package net.steelbreeze.behaviour;
 
-public class PseudoState implements IVertex {
-	String name;
-	PseudoStateKind kind;
-	IRegion owner;
+public class PseudoState extends Element {
+	private PseudoStateKind kind;
 	
-	public PseudoState(String name, PseudoStateKind kind, IRegion owner) {
-		this.name = name;
+	public PseudoState(String name, PseudoStateKind kind, Region owner) {
+		super( name, owner);
+		
 		this.kind = kind;
-		this.owner = owner;
 		
 		if( this.kind.IsInitial() )
-			this.owner.SetInitial( this );
+			owner.initial = this;
 	}
 	
-	@Override
-	public IElement Owner() {
-		return this.owner;
-	}
-	
-	@Override
-	public void Exit(IState context) {		
-	}
-
-	@Override
-	public void Enter(IState context) {		
-	}
-
-	@Override
-	public void Complete(IState context, Boolean deepHistory) {		
-	}
-
-	@Override
-	public String toString() {
-		return this.owner != null ? this.owner + "." + this.name : this.name;
+	public PseudoState(String name, PseudoStateKind kind, CompositeState owner) {
+		super( name, owner);
+		
+		this.kind = kind;
+		
+		if( this.kind.IsInitial() )
+			owner.initial = this;
 	}
 }

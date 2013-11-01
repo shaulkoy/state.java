@@ -1,14 +1,13 @@
 package net.steelbreeze.behaviour;
 
-public class CompositeState extends SimpleState implements IRegion {
+public class CompositeState extends SimpleState {
 	PseudoState initial;
 	
-	public CompositeState(String name, IRegion owner) {
+	public CompositeState(String name, Region owner) {
 		super(name, owner);
 	}
 
-	@Override
-	public void SetInitial( PseudoState initial ) {
-		this.initial = initial;
-	}	
+	public CompositeState(String name, CompositeState owner) {
+		super(name, owner);
+	}
 }

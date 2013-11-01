@@ -1,11 +1,13 @@
 package net.steelbreeze.behaviour;
 
 public class Transition<TMessage> implements ITransition {
-	IElement target;
 	IGuardT<TMessage> guard;
+	Path path;
+	Element target;
 	
-	public Transition( IElement source, IElement target, IGuardT<TMessage> guard ) {
+	public Transition( Element source, Element target, IGuardT<TMessage> guard ) {
 		this.guard = guard;
 		this.target = target;
+		this.path = new Path( source, target );
 	}
 }

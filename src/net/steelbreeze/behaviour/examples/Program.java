@@ -23,25 +23,29 @@ public class Program {
 		SimpleState paused = new SimpleState("paused", active);
 		
 		// add some behaviour
-		active.AddEntry( new IBehaviour() { public void Execute() { EngageHead(); } } );
-		active.AddExit( new IBehaviour() { public void Execute() { DisengageHead(); } } );
+		active.addEntry( new IBehaviour() { public void execute() { EngageHead(); } } );
+		active.addExit( new IBehaviour() { public void execute() { DisengageHead(); } } );
 
-		running.AddEntry( new IBehaviour() { public void Execute() { StartMotor(); } } );
-		running.AddExit( new IBehaviour() { public void Execute() { StopMotor(); } } );
+		running.addEntry( new IBehaviour() { public void execute() { StartMotor(); } } );
+		running.addExit( new IBehaviour() { public void execute() { StopMotor(); } } );
 		
 		// create the transitions between states
-		new Completion( initial, operational, null );
+		Completion t0 = new Completion( initial, operational, null );
 		new Completion( history, stopped, null );
-		new Transition<String>( stopped, running, new IGuardT<String>() { public Boolean Evaluate( String message ) { return message == "play"; } } );
-		new Transition<String>( active, stopped, new IGuardT<String>() { public Boolean Evaluate( String message ) { return message == "stop"; } } );
-		new Transition<String>( running, paused, new IGuardT<String>() { public Boolean Evaluate( String message ) { return message == "pause"; } } );
-		new Transition<String>( paused, running, new IGuardT<String>() { public Boolean Evaluate( String message ) { return message == "play"; } } );
-		new Transition<String>( operational, flipped, new IGuardT<String>() { public Boolean Evaluate( String message ) { return message == "flip"; } } );
-		new Transition<String>( flipped, operational, new IGuardT<String>() { public Boolean Evaluate( String message ) { return message == "flip"; } } );
-		new Transition<String>( operational, end, new IGuardT<String>() { public Boolean Evaluate( String message ) { return message == "off"; } } );
+		new Transition<String>( stopped, running, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "play"; } } );
+		new Transition<String>( active, stopped, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "stop"; } } );
+		new Transition<String>( running, paused, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "pause"; } } );
+		new Transition<String>( paused, running, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "play"; } } );
+		new Transition<String>( operational, flipped, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "flip"; } } );
+		new Transition<String>( flipped, operational, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "flip"; } } );
+		new Transition<String>( operational, end, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "off"; } } );
 				
-		System.out.println(paused);
-		System.out.println(history);
+		t0.addEffect( new IBehaviour() { public void execute() { DisengageHead(); } } );
+		t0.addEffect( new IBehaviour() { public void execute() { StopMotor(); } } );
+
+		State state = new State();
+		
+		player.initialise(state);
 	}
 	
 	public static void EngageHead() {

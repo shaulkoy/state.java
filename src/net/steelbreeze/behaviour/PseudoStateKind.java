@@ -1,6 +1,9 @@
 package net.steelbreeze.behaviour;
 
+import java.util.HashSet;
+
 public enum PseudoStateKind {
+	
 	Choice,
 	DeepHistory,
 	Initial,
@@ -8,7 +11,7 @@ public enum PseudoStateKind {
 	ShallowHistory,
 	Terminate;
 
-	public boolean IsHistory() {
+	public boolean isHistory() {
 		switch( this ) {
 		case DeepHistory:
 		case ShallowHistory:
@@ -19,7 +22,7 @@ public enum PseudoStateKind {
 		}
 	}
 
-	public boolean IsInitial() {
+	public boolean isInitial() {
 		switch( this ) {
 		case DeepHistory:
 		case Initial:
@@ -28,6 +31,21 @@ public enum PseudoStateKind {
 		
 		default:
 			return false;
+		}
+	}
+	
+	public Completion completion( HashSet<Completion> completions ) {
+		switch( this ) {
+		
+		// TODO: Choice
+		
+		// TODO: Junction
+		
+		case Terminate:
+			return null;
+		
+		default:
+			return Enumerable.singleOrDefault(completions);
 		}
 	}
 }

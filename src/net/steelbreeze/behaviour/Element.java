@@ -11,51 +11,51 @@ public abstract class Element {
 		this.owner = owner;
 	}
 	
-	public String GetName() {
+	public String getName() {
 		return name;
 	}
 
-	public String GetQualifiedName() {
-		return this.owner != null ? this.owner.GetQualifiedName() + "." + this.name : this.name;
+	public String getQualifiedName() {
+		return this.owner != null ? this.owner.getQualifiedName() + "." + this.name : this.name;
 	}
 	
-	public Element GetOwner() { 
+	public Element getOwner() { 
 		return this.owner;
 	}
 	
-	ArrayList<Element> GetAncestors() {
-		ArrayList<Element> ancestors = this.owner != null ? this.owner.GetAncestors() : new ArrayList<Element>();
+	ArrayList<Element> getAncestors() {
+		ArrayList<Element> ancestors = this.owner != null ? this.owner.getAncestors() : new ArrayList<Element>();
 		
 		ancestors.add(this);
 		
 		return ancestors;
 	}
 
-	void BeginExit( IState context ) {
+	void beginExit( IState context ) {
 	}
 	
-	void EndExit( IState context ) {
-		System.out.println( "Leave: " + this.GetQualifiedName() );
+	void endExit( IState context ) {
+		System.out.println( "Leave: " + this.getQualifiedName() );
 		
-		context.SetActive( this, false );
+		context.setActive( this, false );
 	}
 	
-	void BeginEnter( IState context ) {
-		if( context.GetActive( this ) ) {
-			this.BeginExit( context );
-			this.EndExit(context);
+	void beginEnter( IState context ) {
+		if( context.getActive( this ) ) {
+			this.beginExit( context );
+			this.endExit(context);
 		}
 		
-		System.out.println( "Enter: " + this.GetQualifiedName() );
+		System.out.println( "Enter: " + this.getQualifiedName() );
 		
-		context.SetActive( this, true );
+		context.setActive( this, true );
 	}
 	
-	void EntEnter( IState state ) {		
+	void endEnter( IState state, Boolean deepHistory ) {		
 	}
 	
 	@Override
 	public String toString() {
-		return this.GetQualifiedName();
+		return this.getQualifiedName();
 	}
 }

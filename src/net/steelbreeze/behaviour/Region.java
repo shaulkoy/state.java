@@ -41,5 +41,10 @@ public class Region extends Element {
 
 	}
 	
-	
+	public Boolean process( IState state, Object message ) {
+		if(state.getTerminated() )
+			return false;
+		
+		return state.getActive( this ) && state.getCurrent( this ).process( state, message );
+	}
 }

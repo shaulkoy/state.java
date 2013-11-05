@@ -1,10 +1,10 @@
 package net.steelbreeze.behaviour;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class PseudoState extends Element {
 	private PseudoStateKind kind;
-	private HashSet<Completion> completions;
+	private ArrayList<Completion> completions;
 	
 	public PseudoState(String name, PseudoStateKind kind, Region owner) {
 		super( name, owner);
@@ -30,7 +30,7 @@ public class PseudoState extends Element {
 	
 	void addCompletion( Completion completion ) {
 		if( this.completions == null )
-			this.completions = new HashSet<Completion>();
+			this.completions = new ArrayList<Completion>();
 		
 		this.completions.add(completion);
 	}

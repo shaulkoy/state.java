@@ -1,21 +1,25 @@
 package net.steelbreeze.behaviour.examples;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import net.steelbreeze.behaviour.*;
 
 public class Program {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		// create the state machine root
 		Region player = new Region( "player", null );
 		
 		// create some states
-		PseudoState initial = new PseudoState( "initial", PseudoStateKind.Initial, player);
-		CompositeState operational = new CompositeState( "operational", player);
+		PseudoState initial = new PseudoState( "initial", PseudoStateKind.Initial, player );
+		CompositeState operational = new CompositeState( "operational", player );
 		SimpleState flipped = new SimpleState( "flipped", player );
-		FinalState end = new FinalState("final", player);
+		FinalState end = new FinalState("final", player );
 		
-		PseudoState history = new PseudoState("history", PseudoStateKind.DeepHistory, operational);
+		PseudoState history = new PseudoState("history", PseudoStateKind.DeepHistory, operational );
 		SimpleState stopped = new SimpleState("stopped", operational);
 		CompositeState active = new CompositeState("active", operational);
 		
@@ -32,20 +36,30 @@ public class Program {
 		// create the transitions between states
 		Completion t0 = new Completion( initial, operational, null );
 		new Completion( history, stopped, null );
-		new Transition<String>( stopped, running, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "play"; } } );
-		new Transition<String>( active, stopped, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "stop"; } } );
-		new Transition<String>( running, paused, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "pause"; } } );
-		new Transition<String>( paused, running, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "play"; } } );
-		new Transition<String>( operational, flipped, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "flip"; } } );
-		new Transition<String>( flipped, operational, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "flip"; } } );
-		new Transition<String>( operational, end, new IGuardT<String>() { public Boolean evaluate( String message ) { return message == "off"; } } );
+		new Transition<String>( stopped, running, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "play" ); } } );
+		new Transition<String>( active, stopped, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "stop" ); } } );
+		new Transition<String>( running, paused, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "pause" ); } } );
+		new Transition<String>( paused, running, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "play" ); } } );
+		new Transition<String>( operational, flipped, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "flip" ); } } );
+		new Transition<String>( flipped, operational, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "flip" ); } } );
+		new Transition<String>( operational, end, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "off" ); } } );
 				
 		t0.addEffect( new IBehaviour() { public void execute() { DisengageHead(); } } );
 		t0.addEffect( new IBehaviour() { public void execute() { StopMotor(); } } );
 
 		State state = new State();
 		
-		player.initialise(state);
+		player.initialise( state );
+		
+		BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
+		
+		while( player.isComplete(state) == false  ) {
+			
+			System.out.print( "> " );
+			
+			if( player.process(state, br.readLine() ) == false )
+					System.out.println( "unknown command" );
+		}
 	}
 	
 	public static void EngageHead() {

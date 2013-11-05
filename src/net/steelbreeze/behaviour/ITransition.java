@@ -1,5 +1,7 @@
 package net.steelbreeze.behaviour;
 
-public interface ITransition {
-
+interface ITransition {
+	Boolean guard( Object message );
+	
+	void traverse( IState context, Object message );
 }

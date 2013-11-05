@@ -27,7 +27,7 @@ public class Transition<TMessage> implements ITransition {
 		source.addTransition( this );
 	}
 	
-	public void AddEffect( IBehaviourT<TMessage> behaviour ) {
+	public void addEffect( IBehaviourT<TMessage> behaviour ) {
 		if( this.effect == null )
 			this.effect = new ArrayList<IBehaviourT<TMessage>>();
 		
@@ -35,14 +35,14 @@ public class Transition<TMessage> implements ITransition {
 	}
 	
 	@SuppressWarnings("unchecked") // unsafe cast is safe as this won't get called unless Guard evaluates true and that performs a type check
-	protected void OnEffect( Object message ) {		
+	protected void onEffect( Object message ) {		
 		if( this.effect != null )
 			for( IBehaviourT<TMessage> behaviour : effect )
 				behaviour.execute( ( TMessage )message );
 	}
 	
 	@SuppressWarnings("unchecked") // TODO: find a better way to perform the type check
-	Boolean Guard( Object message ) {
+	public Boolean guard( Object message ) {
 		try {
 			return this.guard == null || this.guard.evaluate( (TMessage )message  );
 		}
@@ -51,11 +51,11 @@ public class Transition<TMessage> implements ITransition {
 		}
 	}
 	
-	void Traverse( IState context, Object message ) {
+	public void traverse( IState context, Object message ) { // TODO: find a way to keep internal
 		if( this.path != null )
 			this.path.exit( context );
 		
-		this.OnEffect( message );
+		this.onEffect( message );
 		
 		if( this.path != null )
 			this.path.enter( context, false );

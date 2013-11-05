@@ -1,5 +1,6 @@
 package net.steelbreeze.behaviour;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class SimpleState extends Element {
@@ -34,7 +35,7 @@ public class SimpleState extends Element {
 		if( this.exit == null )
 			this.exit = new HashSet<IBehaviour>();
 		
-		this.entry.add( behaviour );
+		this.exit.add( behaviour );
 	}
 	
 	public void addEntry(IBehaviour behaviour) {
@@ -80,11 +81,38 @@ public class SimpleState extends Element {
 	void endEnter(IState state, Boolean deepHistory) {
 		if( this.completions != null ) {
 			if( this.isComplete(state)) {
-				Completion completion = Enumerable.singleOrDefault( completions );
+				ArrayList<Completion> results = new ArrayList<Completion>();
 				
-				if( completion != null )
-					completion.traverse(state,  deepHistory );
+				for( Completion completion : this.completions )
+					if( completion.guard() )
+						results.add( completion );
+				
+				if( results.size() == 1 )
+					results.get( 0 ).traverse(state,  deepHistory );
 			}
 		}
-	}		
+	}
+	
+	public Boolean process( IState context, Object message ) {
+		if( context.getTerminated())
+			return false;
+		
+		if( this.transitions == null )
+			return false;
+		
+		ArrayList<ITransition> results = new ArrayList<ITransition>();
+		
+		for( ITransition transition : transitions )
+			if( transition.guard( message ) )
+				results.add( transition );
+		
+		if( results.size() == 0 )
+			return false;
+		
+		// TODO: exception if < 1
+		
+		results.get( 0 ).traverse( context, message );
+		
+		return true;
+	}
 }

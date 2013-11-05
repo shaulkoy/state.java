@@ -20,27 +20,23 @@ public class State implements IState {
 
 	@Override
 	public void setActive(Element element, Boolean value) {
-		if( this.active.containsKey(element))
-			this.active.remove(element); // TODO: make much cleaner (update in place)
-
 		this.active.put(element, value);
 	}
 
 	@Override
 	public boolean getActive(Element element) {
-		return this.active.containsKey(element) ? this.active.get(element) : false; // TODO: single hit on collection
+		Boolean active = this.active.get( element );
+		
+		return active == null ? false : active;
 	}
 
 	@Override
 	public void setCurrent(Element element, SimpleState value) {
-		if( this.current.containsKey(element))
-			this.current.remove(element); // TODO: make much cleaner (update in place)
-
 		this.current.put(element, value);
 	}
 
 	@Override
 	public SimpleState getCurrent(Element element) {
-		return this.current.containsKey(element) ? this.current.get(element) : null; // TODO: single hit on collection
+		return this.current.get( element );
 	}
 }

@@ -1,6 +1,6 @@
 package net.steelbreeze.behaviour;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public enum PseudoStateKind {
 	
@@ -34,7 +34,7 @@ public enum PseudoStateKind {
 		}
 	}
 	
-	public Completion completion( HashSet<Completion> completions ) {
+	public Completion completion( ArrayList<Completion> completions ) {
 		switch( this ) {
 		
 		// TODO: Choice
@@ -45,7 +45,8 @@ public enum PseudoStateKind {
 			return null;
 		
 		default:
-			return Enumerable.singleOrDefault(completions);
+			// TODO: exception if != 1
+			return completions.get( 0 );
 		}
 	}
 }

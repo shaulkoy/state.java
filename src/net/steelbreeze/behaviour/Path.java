@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 class Path {
 	Element beginExit;
-	ArrayList<Element> endExit = new ArrayList<Element>();
+	Element[] endExit;
 	Element[] beginEnter;
 	Element endEnter;
 	
@@ -13,17 +13,16 @@ class Path {
 		ArrayList<Element> targetAncestors = target.getAncestors();
 		int uncommonAncestor = uncommon( sourceAncestors, targetAncestors, 0 );
 				
-		this.beginExit = source;
-		
-		for( int e = sourceAncestors.size(); e > uncommonAncestor; --e )
-			this.endExit.add( sourceAncestors.get( e - 1 ) );
-
+		this.beginExit = source;		
+		this.endExit = new Element[ sourceAncestors.size() - uncommonAncestor ];
 		this.beginEnter = new Element[ targetAncestors.size() - uncommonAncestor ];
-		
-		for( int e = uncommonAncestor; e < targetAncestors.size(); e++ )
-			this.beginEnter[ e - uncommonAncestor ] = targetAncestors.get( e );
-		
 		this.endEnter = target;
+		
+		for( int e = uncommonAncestor; e < sourceAncestors.size(); e++ )
+			this.endExit[ sourceAncestors.size() - e - 1 ] = sourceAncestors.get( e );
+				
+		for( int e = uncommonAncestor; e < targetAncestors.size(); e++ )
+			this.beginEnter[ e - uncommonAncestor ] = targetAncestors.get( e );	
  	}
 	
 	void exit( IState context ) {

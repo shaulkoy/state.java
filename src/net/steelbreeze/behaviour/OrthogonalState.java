@@ -35,7 +35,7 @@ public class OrthogonalState extends SimpleState {
 	}
 
 	@Override
-	void endEnter( IState context, Boolean deepHistory ) {
+	void endEnter( IState context, Boolean deepHistory ) throws StateMachineException {
 		for( Region region : this.regions ) {
 			region.beginEnter( context );
 			region.endEnter( context, deepHistory );
@@ -45,7 +45,7 @@ public class OrthogonalState extends SimpleState {
 	}
 
 	@Override
-	public Boolean process( IState context, Object message ) {
+	public Boolean process( IState context, Object message ) throws StateMachineException {
 		Boolean result =  super.process( context, message );
 		
 		for( Region region : this.regions )

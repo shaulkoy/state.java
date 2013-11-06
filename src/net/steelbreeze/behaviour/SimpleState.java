@@ -78,7 +78,7 @@ public class SimpleState extends Element {
 	}
 
 	@Override
-	void endEnter(IState state, Boolean deepHistory) {
+	void endEnter(IState state, Boolean deepHistory) throws StateMachineException {
 		if( this.completions != null ) {
 			if( this.isComplete(state)) {
 				ArrayList<Completion> results = new ArrayList<Completion>();
@@ -87,13 +87,18 @@ public class SimpleState extends Element {
 					if( completion.guard() )
 						results.add( completion );
 				
-				if( results.size() == 1 )
+				if( results.size() == 0 )
+					return;
+				
+				if( results.size() > 1 )
+					throw new StateMachineException();
+				
 					results.get( 0 ).traverse(state,  deepHistory );
 			}
 		}
 	}
 	
-	public Boolean process( IState context, Object message ) {
+	public Boolean process( IState context, Object message ) throws StateMachineException {
 		if( context.getTerminated())
 			return false;
 		
@@ -108,8 +113,9 @@ public class SimpleState extends Element {
 		
 		if( results.size() == 0 )
 			return false;
-		
-		// TODO: exception if < 1
+
+		if( results.size() > 1 )
+			throw new StateMachineException();
 		
 		results.get( 0 ).traverse( context, message );
 		

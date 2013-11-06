@@ -8,7 +8,7 @@ import net.steelbreeze.behaviour.*;
 
 public class Program {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, StateMachineException {
 		
 		// create the state machine root
 		Region player = new Region( "player", null );
@@ -43,16 +43,18 @@ public class Program {
 		new Transition<String>( operational, flipped, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "flip" ); } } );
 		new Transition<String>( flipped, operational, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "flip" ); } } );
 		new Transition<String>( operational, end, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "off" ); } } );
+		Transition<String> help = new Transition<String>( operational, operational, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "help" ); } } );
 				
 		t0.addEffect( new IBehaviour() { public void execute() { DisengageHead(); } } );
 		t0.addEffect( new IBehaviour() { public void execute() { StopMotor(); } } );
-
+		help.addEffect( new IBehaviourT<String>() { public void execute( String command ) { System.out.println( "help yourself"); } } );
+		
 		State state = new State();
 		
 		player.initialise( state );
 		
 		BufferedReader br = new BufferedReader( new InputStreamReader( System.in ) );
-		
+
 		while( player.isComplete(state) == false  ) {
 			
 			System.out.print( "> " );

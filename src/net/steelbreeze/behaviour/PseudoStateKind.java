@@ -34,7 +34,7 @@ public enum PseudoStateKind {
 		}
 	}
 	
-	public Completion completion( ArrayList<Completion> completions ) {
+	public Completion completion( ArrayList<Completion> completions ) throws StateMachineException {
 		switch( this ) {
 		
 		// TODO: Choice
@@ -45,7 +45,9 @@ public enum PseudoStateKind {
 			return null;
 		
 		default:
-			// TODO: exception if != 1
+			if( completions.size() != 1 )
+				throw new StateMachineException();
+			
 			return completions.get( 0 );
 		}
 	}

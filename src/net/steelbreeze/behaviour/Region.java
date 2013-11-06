@@ -14,7 +14,7 @@ public class Region extends Element {
 		return context.getTerminated() || context.getCurrent( this ) instanceof FinalState;
 	}
 	
-	public void initialise( IState context ) {
+	public void initialise( IState context ) throws StateMachineException {
 		this.beginEnter(context);
 		this.endEnter(context, false);
 	}
@@ -30,7 +30,7 @@ public class Region extends Element {
 	}
 
 	@Override
-	void endEnter(IState context, Boolean deepHistory) {
+	void endEnter(IState context, Boolean deepHistory) throws StateMachineException {
 		Element current = deepHistory || this.initial.getKind().isHistory() ? context.getCurrent( this ) : this.initial;
 		
 		if( current == null )
@@ -41,7 +41,7 @@ public class Region extends Element {
 
 	}
 	
-	public Boolean process( IState state, Object message ) {
+	public Boolean process( IState state, Object message ) throws StateMachineException {
 		if(state.getTerminated() )
 			return false;
 		

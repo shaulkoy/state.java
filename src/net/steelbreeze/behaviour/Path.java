@@ -3,42 +3,36 @@ package net.steelbreeze.behaviour;
 import java.util.ArrayList;
 
 class Path {
-	Element beginExit;
-	Element[] endExit;
-	Element[] beginEnter;
-	Element endEnter;
+	private Element[] exit;
+	private Element[] enter;
 	
 	Path( Element source, Element target ) {
 		ArrayList<Element> sourceAncestors = source.getAncestors();
 		ArrayList<Element> targetAncestors = target.getAncestors();
-		int uncommonAncestor = uncommon( sourceAncestors, targetAncestors, 0 );
+		int uncommonAncestor = source.equals( target ) ? sourceAncestors.size() - 1 :  uncommon( sourceAncestors, targetAncestors, 0 );
 				
-		this.beginExit = source;		
-		this.endExit = new Element[ sourceAncestors.size() - uncommonAncestor ];
-		this.beginEnter = new Element[ targetAncestors.size() - uncommonAncestor ];
-		this.endEnter = target;
+		this.exit = new Element[ sourceAncestors.size() - uncommonAncestor ];
+		this.enter = new Element[ targetAncestors.size() - uncommonAncestor ];
 		
-		for( int e = uncommonAncestor; e < sourceAncestors.size(); e++ )
-			this.endExit[ sourceAncestors.size() - e - 1 ] = sourceAncestors.get( e );
+		for( int i = uncommonAncestor, s = sourceAncestors.size(); i < s; i++ )
+			this.exit[ s - i - 1 ] = sourceAncestors.get( i );
 				
-		for( int e = uncommonAncestor; e < targetAncestors.size(); e++ )
-			this.beginEnter[ e - uncommonAncestor ] = targetAncestors.get( e );	
+		for( int i = uncommonAncestor, s = targetAncestors.size(); i < s; i++ )
+			this.enter[ i - uncommonAncestor ] = targetAncestors.get( i );	
  	}
 	
 	void exit( IState context ) {
-		this.beginExit.beginExit( context );
+		this.exit[ 0 ].beginExit( context );
 		
-		for( Element element : this.endExit ) {
+		for( Element element : this.exit )
 			element.endExit( context );
-		}
 	}
 	
-	void enter( IState context, Boolean deepHistory ) {		
-		for( Element element : this.beginEnter ) {
+	void enter( IState context, Boolean deepHistory ) throws StateMachineException {		
+		for( Element element : this.enter )
 			element.beginEnter( context );
-			
-			this.endEnter.endEnter( context, deepHistory );
-		}
+
+		this.enter[ this.enter.length - 1 ].endEnter( context, deepHistory );
 	}
 	
 	private static int uncommon( ArrayList<Element> sourceAncestors, ArrayList<Element> targetAncestors, int index )

@@ -16,7 +16,7 @@ public class CompositeState extends SimpleState {
 		return context.getTerminated() || context.getCurrent( this ) instanceof FinalState;
 	}
 
-	public void initialise( IState context ) {
+	public void initialise( IState context ) throws StateMachineException {
 		this.beginEnter( context );
 		this.endEnter( context, false );
 	}
@@ -32,7 +32,7 @@ public class CompositeState extends SimpleState {
 	}
 
 	@Override
-	void endEnter( IState context, Boolean deepHistory ) {
+	void endEnter( IState context, Boolean deepHistory ) throws StateMachineException {
 		Element current = deepHistory || this.initial.getKind().isHistory() ? context.getCurrent( this ) : this.initial;
 
 		if( current == null )
@@ -44,15 +44,8 @@ public class CompositeState extends SimpleState {
 		super.endEnter( context, deepHistory );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.steelbreeze.behaviour.SimpleState#process(net.steelbreeze.behaviour
-	 * .IState, java.lang.Object)
-	 */
 	@Override
-	public Boolean process( IState context, Object message ) {
+	public Boolean process( IState context, Object message ) throws StateMachineException {
 		if( context.getTerminated() )
 			return false;
 

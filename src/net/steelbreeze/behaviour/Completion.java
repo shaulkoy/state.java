@@ -52,7 +52,7 @@ public class Completion {
 		return this.guardCondition == null || this.guardCondition.evaluate();
 	}
 
-	void traverse( IState context, Boolean deepHistory ) {
+	void traverse( IState context, Boolean deepHistory ) throws StateMachineException {
 		path.exit( context );
 
 		this.onEffect();

@@ -44,7 +44,7 @@ public class PseudoState extends Element {
 	}
 
 	@Override
-	void endEnter(IState state, Boolean deepHistory) {
+	void endEnter(IState state, Boolean deepHistory) throws StateMachineException {
 		this.kind.completion( completions ).traverse( state, deepHistory );
 	}	
 }

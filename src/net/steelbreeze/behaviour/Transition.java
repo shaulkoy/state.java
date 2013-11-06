@@ -51,7 +51,7 @@ public class Transition<TMessage> implements ITransition {
 		}
 	}
 	
-	public void traverse( IState context, Object message ) { // TODO: find a way to keep internal
+	public void traverse( IState context, Object message ) throws StateMachineException { // TODO: find a way to keep internal
 		if( this.path != null )
 			this.path.exit( context );
 		

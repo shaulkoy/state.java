@@ -35,6 +35,10 @@ public class Completion {
 		source.addCompletion( this );
 	}
 
+	Boolean isElse() {
+		return false;
+	}
+	
 	public void addEffect( IBehaviour behaviour ) {
 		if( this.effect == null )
 			this.effect = new ArrayList< IBehaviour >();
@@ -58,5 +62,20 @@ public class Completion {
 		this.onEffect();
 
 		path.enter( context, deepHistory );
+	}
+	
+	public class Else extends Completion {
+		public Else( PseudoState source, PseudoState target ) {
+			super( source, target, new IGuard() { public Boolean evaluate() { return false; } } );
+		}
+
+		public Else( PseudoState source, SimpleState target ) {
+			super( source, target, new IGuard() { public Boolean evaluate() { return false; } } );
+		}
+
+		@Override
+		Boolean isElse() {
+			return true;
+		}		
 	}
 }

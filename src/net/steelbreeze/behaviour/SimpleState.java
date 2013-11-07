@@ -1,13 +1,12 @@
 package net.steelbreeze.behaviour;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class SimpleState extends Element {
-	private HashSet<Completion> completions;
-	private HashSet<ITransition> transitions;
-	HashSet<IBehaviour> exit;
-	HashSet<IBehaviour> entry;
+	private ArrayList<Completion> completions;
+	private ArrayList<ITransition> transitions;
+	ArrayList<IBehaviour> exit;
+	ArrayList<IBehaviour> entry;
 	
 	public SimpleState(String name, Region owner) {
 		super( name, owner );
@@ -19,28 +18,28 @@ public class SimpleState extends Element {
 
 	void addCompletion( Completion completion ) {
 		if( this.completions == null )
-			this.completions = new HashSet<Completion>();
+			this.completions = new ArrayList<Completion>();
 		
 		this.completions.add(completion);
 	}
 
 	void addTransition( ITransition transition ) {
 		if( this.transitions == null )
-			this.transitions = new HashSet<ITransition>();
+			this.transitions = new ArrayList<ITransition>();
 		
 		this.transitions.add(transition);
 	}
 
 	public void addExit(IBehaviour behaviour) {
 		if( this.exit == null )
-			this.exit = new HashSet<IBehaviour>();
+			this.exit = new ArrayList<IBehaviour>();
 		
 		this.exit.add( behaviour );
 	}
 	
 	public void addEntry(IBehaviour behaviour) {
 		if( this.entry == null )
-			this.entry = new HashSet<IBehaviour>();
+			this.entry = new ArrayList<IBehaviour>();
 		
 		this.entry.add( behaviour );
 	}
@@ -86,13 +85,11 @@ public class SimpleState extends Element {
 				for( Completion completion : this.completions )
 					if( completion.guard() )
 						results.add( completion );
-				
-				if( results.size() == 0 )
-					return;
-				
+								
 				if( results.size() > 1 )
-					throw new StateMachineException();
+					throw new StateMachineException( "Malformed state machine; multiple completion transitions evaluated true from " + this );
 				
+				if( results.size() == 1 )
 					results.get( 0 ).traverse(state,  deepHistory );
 			}
 		}
@@ -115,7 +112,7 @@ public class SimpleState extends Element {
 			return false;
 
 		if( results.size() > 1 )
-			throw new StateMachineException();
+			throw new StateMachineException( "Malformed state machine; multiple transitions evaluated true from " + this + " for " + message );
 		
 		results.get( 0 ).traverse( context, message );
 		

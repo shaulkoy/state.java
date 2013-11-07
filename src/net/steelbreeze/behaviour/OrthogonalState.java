@@ -1,9 +1,9 @@
 package net.steelbreeze.behaviour;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class OrthogonalState extends SimpleState {
-	HashSet< Region > regions;
+	ArrayList< Region > regions = new ArrayList< Region >();
 
 	public OrthogonalState( String name, Region owner ) {
 		super( name, owner );

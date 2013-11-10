@@ -9,7 +9,7 @@ class Path {
 	Path( Element source, Element target ) {
 		ArrayList<Element> sourceAncestors = source.getAncestors();
 		ArrayList<Element> targetAncestors = target.getAncestors();
-		int uncommonAncestor = source.equals( target ) ? sourceAncestors.size() - 1 :  uncommon( sourceAncestors, targetAncestors, 0 );
+		int uncommonAncestor = source.getOwner().equals( target.getOwner() ) ? sourceAncestors.size() - 1 :  uncommon( sourceAncestors, targetAncestors, 0 );
 				
 		this.exit = new Element[ sourceAncestors.size() - uncommonAncestor ];
 		this.enter = new Element[ targetAncestors.size() - uncommonAncestor ];

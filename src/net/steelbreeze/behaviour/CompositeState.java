@@ -16,11 +16,6 @@ public class CompositeState extends SimpleState {
 		return context.getTerminated() || context.getCurrent( this ) instanceof FinalState;
 	}
 
-	public void initialise( IState context ) throws StateMachineException {
-		this.beginEnter( context );
-		this.endEnter( context, false );
-	}
-
 	@Override
 	void beginExit( IState context ) {
 		SimpleState current = context.getCurrent( this );

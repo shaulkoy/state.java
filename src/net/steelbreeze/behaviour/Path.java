@@ -18,17 +18,27 @@ class Path {
  	}
 	
 	void exit( IState context ) {
-		this.exit.get( 0 ).beginExit( context );	
+		Boolean first = true;
 		
-		for( Element element : this.exit )
+		for( Element element : this.exit ) {
+			if( first ) {
+				element.beginExit( context );
+				first = false;
+			}
+			
 			element.endExit( context );
+		}
 	}
 	
-	void enter( IState context, Boolean deepHistory ) throws StateMachineException {		
-		for( Element element : this.enter )
+	void enter( IState context, Boolean deepHistory ) throws StateMachineException {
+		Element last = null;
+		
+		for( Element element : this.enter ) {
 			element.beginEnter( context );
-
-		this.enter.get( this.enter.size() - 1 ).endEnter( context, deepHistory );
+			last = element;
+		}
+		
+		last.endEnter( context, deepHistory );
 	}
 	
 	private static int uncommon( List<Element> sourceAncestors, List<Element> targetAncestors, int index )

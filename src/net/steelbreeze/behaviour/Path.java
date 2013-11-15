@@ -1,28 +1,24 @@
 package net.steelbreeze.behaviour;
 
-import java.util.ArrayList;
+import java.util.*;
 
 class Path {
-	private Element[] exit;
-	private Element[] enter;
+	private List<Element> exit;
+	private List<Element> enter;
 	
 	Path( Element source, Element target ) {
-		ArrayList<Element> sourceAncestors = source.getAncestors();
-		ArrayList<Element> targetAncestors = target.getAncestors();
+		List<Element> sourceAncestors = source.getAncestors();
+		List<Element> targetAncestors = target.getAncestors();
 		int uncommonAncestor = source.getOwner().equals( target.getOwner() ) ? sourceAncestors.size() - 1 :  uncommon( sourceAncestors, targetAncestors, 0 );
-				
-		this.exit = new Element[ sourceAncestors.size() - uncommonAncestor ];
-		this.enter = new Element[ targetAncestors.size() - uncommonAncestor ];
+					
+		this.exit =  sourceAncestors.subList( uncommonAncestor, sourceAncestors.size() );
+		this.enter = targetAncestors.subList( uncommonAncestor, targetAncestors.size() );
 		
-		for( int i = uncommonAncestor, s = sourceAncestors.size(); i < s; i++ )
-			this.exit[ s - i - 1 ] = sourceAncestors.get( i );
-				
-		for( int i = uncommonAncestor, s = targetAncestors.size(); i < s; i++ )
-			this.enter[ i - uncommonAncestor ] = targetAncestors.get( i );	
+		Collections.reverse( this.exit );
  	}
 	
 	void exit( IState context ) {
-		this.exit[ 0 ].beginExit( context );
+		this.exit.get( 0 ).beginExit( context );	
 		
 		for( Element element : this.exit )
 			element.endExit( context );
@@ -32,10 +28,10 @@ class Path {
 		for( Element element : this.enter )
 			element.beginEnter( context );
 
-		this.enter[ this.enter.length - 1 ].endEnter( context, deepHistory );
+		this.enter.get( this.enter.size() - 1 ).endEnter( context, deepHistory );
 	}
 	
-	private static int uncommon( ArrayList<Element> sourceAncestors, ArrayList<Element> targetAncestors, int index )
+	private static int uncommon( List<Element> sourceAncestors, List<Element> targetAncestors, int index )
 	{
 		return sourceAncestors.get( index ).equals( targetAncestors.get( index ) ) ? uncommon( sourceAncestors, targetAncestors, ++index ) : index;
 	}

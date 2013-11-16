@@ -2,7 +2,7 @@ package net.steelbreeze.behaviour;
 
 import java.util.ArrayList;
 
-public class PseudoState extends Element {
+public final class PseudoState extends Element {
 	private PseudoStateKind kind;
 	private ArrayList<Completion> completions;
 	

@@ -38,8 +38,9 @@ public enum PseudoStateKind {
 				ArrayList< Completion > results = new ArrayList< Completion >();
 
 				for( Completion completion : completions )
-					if( completion.guard() )
-						results.add( completion );
+					if( !completion.isElse() )
+						if( completion.guard() )
+							results.add( completion );
 
 				if( results.size() > 0 )
 					return results.get( random.nextInt( results.size() ) );
@@ -49,7 +50,7 @@ public enum PseudoStateKind {
 						results.add( completion );
 
 				if( results.size() > 1 )
-					throw new StateMachineException( "Malformed state machine; no completion transitions evaluated true from " + this );
+					throw new StateMachineException( "Malformed state machine; multiple else transitions " + this );
 
 				if( results.size() == 0 )
 					throw new StateMachineException( "Malformed state machine; no completion transitions evaluated true from " + this );
@@ -58,29 +59,35 @@ public enum PseudoStateKind {
 			}
 
 			case Junction: {
-				ArrayList< Completion > results = new ArrayList< Completion >();
+				Completion result = null;
+				
+				for( Completion completion : completions ) {
+					if( !completion.isElse() ) {
+						if( completion.guard() ) {
+							if( result != null )
+								throw new StateMachineException( "Malformed state machine; multiple completion transitions evaluated true from " + this );
 
-				for( Completion completion : completions )
-					if( completion.guard() )
-						results.add( completion );
+							result = completion;
+						}
+					}
+				}
 
-				if( results.size() == 1 )
-					return results.get( 0 );
+				if( result != null )
+					return result;
 
-				if( results.size() > 1 )
-					throw new StateMachineException( "Malformed state machine; multiple completion transitions evaluated true from " + this );
+				for( Completion completion : completions ) {
+					if( completion.isElse() ) {
+						if( result != null )
+							throw new StateMachineException( "Malformed state machine; multiple else completion transitions from " + this );
 
-				for( Completion completion : completions )
-					if( completion.isElse() )
-						results.add( completion );
+						result = completion;
+					}
+				}
 
-				if( results.size() > 1 )
-					throw new StateMachineException( "Malformed state machine; multiple else completion transitions from " + this );
-
-				if( results.size() == 0 )
+				if( result == null )
 					throw new StateMachineException( "Malformed state machine; no completion transitions evaluated true from " + this );
 								
-				return results.get( 0 );
+				return result;
 			}
 
 			case Terminate:

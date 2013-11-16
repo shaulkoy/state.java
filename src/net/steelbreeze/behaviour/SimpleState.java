@@ -80,17 +80,19 @@ public class SimpleState extends Element {
 	void endEnter(IState state, Boolean deepHistory) throws StateMachineException {
 		if( this.completions != null ) {
 			if( this.isComplete(state)) {
-				ArrayList<Completion> results = new ArrayList<Completion>();
+				Completion result = null;
 				
-				for( Completion completion : this.completions )
-					if( completion.guard() )
-						results.add( completion );
-								
-				if( results.size() > 1 )
-					throw new StateMachineException( "Malformed state machine; multiple completion transitions evaluated true from " + this );
-				
-				if( results.size() == 1 )
-					results.get( 0 ).traverse(state,  deepHistory );
+				for( Completion completion : this.completions ) {
+					if( completion.guard() ) {
+						if( result != null )
+							throw new StateMachineException( "Malformed state machine; multiple completion transitions evaluated true from " + this );
+
+						result = completion;
+					}
+				}
+												
+				if( result != null )
+					result.traverse(state,  deepHistory );
 			}
 		}
 	}
@@ -102,20 +104,20 @@ public class SimpleState extends Element {
 		if( this.transitions == null )
 			return false;
 		
-		ArrayList<ITransition> results = new ArrayList<ITransition>();
+		ITransition result = null;
 		
-		for( ITransition transition : transitions )
-			if( transition.guard( message ) )
-				results.add( transition );
-		
-		if( results.size() == 0 )
-			return false;
+		for( ITransition transition : transitions ) {
+			if( transition.guard( message ) ) {
+				if( result != null )
+					throw new StateMachineException( "Malformed state machine; multiple transitions evaluated true from " + this + " for " + message );
+				
+				result = transition;
+			}
+		}
 
-		if( results.size() > 1 )
-			throw new StateMachineException( "Malformed state machine; multiple transitions evaluated true from " + this + " for " + message );
+		if( result != null )
+			result.traverse( context, message );
 		
-		results.get( 0 ).traverse( context, message );
-		
-		return true;
+		return result != null;
 	}
 }

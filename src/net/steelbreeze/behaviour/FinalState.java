@@ -1,6 +1,6 @@
 package net.steelbreeze.behaviour;
 
-public class FinalState extends SimpleState {
+public final class FinalState extends SimpleState {
 	public FinalState(String name, Region owner) {
 		super(name, owner);
 	}

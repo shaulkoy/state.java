@@ -43,8 +43,8 @@ public class Program {
 		new Transition<String>( operational, flipped, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "flip" ); } } );
 		new Transition<String>( flipped, operational, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "flip" ); } } );
 		new Transition<String>( operational, end, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "off" ); } } );
-		Transition<String> help = new Transition<String>( operational, operational, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "help" ); } } );
-				
+		Transition<String> help = new Transition<String>( operational, operational, new IGuardT<String>() { public Boolean evaluate( String message ) { return message.equals( "help" ); } } );		
+		
 		t0.addEffect( new IBehaviour() { public void execute() { DisengageHead(); } } );
 		t0.addEffect( new IBehaviour() { public void execute() { StopMotor(); } } );
 		help.addEffect( new IBehaviourT<String>() { public void execute( String command ) { System.out.println( "help yourself"); } } );

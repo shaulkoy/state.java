@@ -1,19 +1,34 @@
 package net.steelbreeze.behaviour;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
-class Path {
+/**
+ * The path to traverse between a pair of Elements within a state machine hierarchy
+ * @author David
+ */
+final class Path {
 	private List<Element> exit;
 	private List<Element> enter;
-	
+
+	/**
+	 * Creates a new path between elements
+	 * @param source The source element
+	 * @param target The target element
+	 */
 	Path( Element source, Element target ) {
+		// get the ancestors of both the source and target elements
 		List<Element> sourceAncestors = source.getAncestors();
 		List<Element> targetAncestors = target.getAncestors();
+		
+		// find the index of the first uncommon ancestor
 		int uncommonAncestor = source.getOwner().equals( target.getOwner() ) ? sourceAncestors.size() - 1 :  uncommon( sourceAncestors, targetAncestors, 0 );
-					
+
+		// record the elements that need to be exited and entered during a transition
 		this.exit =  sourceAncestors.subList( uncommonAncestor, sourceAncestors.size() );
 		this.enter = targetAncestors.subList( uncommonAncestor, targetAncestors.size() );
-		
+
+		// reverse the order of those that need to be exited
 		Collections.reverse( this.exit );
  	}
 	
